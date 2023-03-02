@@ -48,16 +48,17 @@ def createStringVar(string):
 
 window = tk.Tk()
 window.title('File Explorer')
-window.geometry("500x400")
+# window.geometry("500x400")
 window.config(background="#D3D3D3")
 names = ['Programmes', 'Modules', 'Output']
+# window.columnconfigure(1, weight=1)
 stringVars = []
-for name in names:
+for row, name in enumerate(names):
     createStringVar(f'Select {name} Directory')
     label = tk.Label(window, textvariable=stringVars[-1], width=50, height=3, fg='blue')
     button = tk.Button(window, text='BrowseDirectories', command=lambda n=name, s=stringVars[-1]: browseDirectory(n, s))
-    label.grid(column=1, row=names.index(name), columnspan=3, padx=10, pady=10)
-    button.grid(column=4, row=names.index(name))
+    label.grid(column=1, row=row, columnspan=3, padx=10, pady=10)
+    button.grid(column=4, row=row)
 createStringVar('Select Keywords File')
 keywordLabel = tk.Label(window, textvariable=stringVars[-1], width=50, height=3, fg="blue")
 keywordBtn = tk.Button(window, text="Browse Files", command=lambda s=stringVars[-1]: browseFile(s))

@@ -1,4 +1,4 @@
-from pathlib import Path
+"""Details of the structure of txt files, extract data into objects with properties"""
 
 def extractData(path, split_string):
     with path.open('r', encoding='utf8') as f:
@@ -11,13 +11,26 @@ def extractData(path, split_string):
         for chunk in chunks:
             yield chunk
 
-def extractProgrammes(path):
-    for chunk in extractData(path, 'End of Programme Specification for'):
-        yield(Programme(chunk))
 
-def extractModules(path):
-    for chunk in extractData(path, 'End of Programme Specification for'):
-        yield(Programme(chunk))
+class ProgrammeFile:
+    stop = 'End of Programme Specification for'
+
+    def __init__(self, path):
+        self.path = path
+
+    def programmes(self):
+        for d in extractData(self.path, self.stop):
+            yield Programme(d)
+
+class ModuleFile:
+    stop = 'End of Module Specification for'
+
+    def __init__(self, path):
+        self.path = path
+
+    def modules(self):
+        for d in extractData(self.path, self.stop):
+            yield Module(d)
 
 
 def aggregate_until(data, end_item):
@@ -30,6 +43,81 @@ def aggregate_until(data, end_item):
             continue
         result.append(row)
     return result
+
+
+class Programme:
+    def __init__(self, data):
+        assert data[3] == "Programme Specification"
+        assert data[9] == "Programme Full Title: "
+        assert data[15] == "Programme Short Title: "
+        self.full_title = data[11]
+        self.short_title = data[13]
+        assert data[17] == "Programme Code: "
+        assert data[19] == "Programme Type: "
+        self.type = data[21]
+        self.code = data[23]
+
+        data = data[24:]
+        self.something = "\n".join(aggregate_until(data, "Faculty: "))
+        # print(self.something)
+        assert data[0] == "Faculty: "
+        self.faculty = data[2]
+        assert data[4] == "School: "
+        self.faculty = data[6]
+        assert data[8] == "Department: "
+        self.department = data[10]
+        assert data[12] == "Programme Leader: "
+        self.programme_leader = data[14]
+        assert data[16] == "Mode of Delivery: "
+        assert data[18] == "Normal Duration: "
+        self.mode = data[22]
+        self.duration = data[20]
+        assert data[24] == "Offered at the following sites:"
+
+        data = data[25:]
+        self.sites = aggregate_until(data, "Distance Learning availability:")
+        assert data[0] == "Distance Learning availability: "
+        _ = aggregate_until(data, 'Awards Available:')
+
+        assert data[0] == "Awards Available:\t"
+        award_keys = data[1].split('\t')
+        data = data[2:]
+        awards = aggregate_until(data, 'Relevant QAA subject benchmarking statement(s):')
+        self.awards = [{k: v for k, v in zip(award_keys, a.split('\t'))} for a in awards]
+
+        assert data[0] == "Relevant QAA subject benchmarking statement(s):"
+        data = data[1:]
+        self.qaa_benchmarking_statements = aggregate_until(data, 'Accreditation Details:')
+        data = data[1:]
+        self.accreditation_details = aggregate_until(data, "Entry Requirements")
+        self.entry_requirements = aggregate_until(data, 'Programme Description')
+
+        assert data[0] == "Programme Description: Characteristics and Aims"
+        self.description = data[1].strip()
+        assert data[3] == "Learning, Teaching and Assessment Strategies:"
+        self.learning_teaching_and_assessment_strategies = data[4].strip()
+        assert data[6] == "Structure and Regulations:"
+        self.structure_and_regulations = data[7].strip()
+        assert data[9] == "Learning Outcomes:"
+        self.learning_outcomes = data[10].strip()
+        data = data[12:]
+        assert data[0].strip() == 'Module Details (across all module groups):'
+
+        keys = data[1].split('\t')
+        data = data[2:]
+        values = aggregate_until(data, 'Any programme-specific differences or regulations:')
+        self.modules = [{k: v for k, v in zip(keys, v.split('\t'))} for v in values]
+        assert data == ['Any programme-specific differences or regulations:', '', '']
+
+    def __str__(self):
+        return f"Programme({self.code})"
+
+    def corpora(self):
+        return {
+            "description": self.description,
+            "learning_teaching_and_assessment_strategies": self.learning_teaching_and_assessment_strategies,
+            "learning outcomes": self.learning_outcomes
+        }
 
 class Module:
     def __init__(self, data):
@@ -118,21 +206,14 @@ class Module:
         self.programmes = [{k: v for k, v in zip(programme_keys, p.split('\t'))} for p in programmes]
         assert data == ["Remarks:", "", ""]
 
-    def corpus(self):
+    def corpora(self):
         """
         This method should return the main corpus for this module.
         Make adjustments here to control what we actually analyse.
         """
         return {
-            self.description
+            "description": self.description
         }
-
-class Programme:
-    def __init__(self, data):
-        self.data = data
-
-root = Path(__file__).parent.parent / "import"
-m = root / "0324_Module_Specification_for_Academics.txt"
-p = root / "0325_Programme_Specification_for_Academics.txt"
-modules = [Module(ch) for ch in extractData(m, 'End of Module Specification for')]
-programmes = [Programme(ch) for ch in extractData(p, 'End of Programme Specification for')]
+    
+    def __str__(self):
+        return f"Module({self.code})"

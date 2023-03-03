@@ -1,8 +1,9 @@
 """Details of the structure of txt files, extract data into objects with properties"""
 
+
 def extractData(path, split_string):
     with path.open('r', encoding='utf8') as f:
-        data = f.read();
+        data = f.read()
         chunks = data.split(split_string)
         chunks = [ch.splitlines() for ch in chunks]
         # chunks = [[line.strip() for line in ch if line.strip()] for ch in chunks]
@@ -21,6 +22,7 @@ class ProgrammeFile:
     def programmes(self):
         for d in extractData(self.path, self.stop):
             yield Programme(d)
+
 
 class ModuleFile:
     stop = 'End of Module Specification for'
@@ -119,6 +121,7 @@ class Programme:
             "learning outcomes": self.learning_outcomes
         }
 
+
 class Module:
     def __init__(self, data):
         assert data[3] == "Module Specification"
@@ -162,7 +165,6 @@ class Module:
         assert data[6] in ["Y", "N"]
         self.ethical_approval = data[6] == "Y"
 
-
         assert data[8] == "Details of Accreditation by Professional, Statutory or Regulatory Body:"
         data = data[9:]
         self.accreditation = aggregate_until(data, "Module Pre-requisites:")
@@ -188,15 +190,16 @@ class Module:
         assert len(assessment_keys) == 8
         assessments = aggregate_until(data, "Anonymous marking exemption codes:")
         self.assessments = [{k: v for k, v in zip(assessment_keys, a.split('\t'))} for a in assessments]
-        assert data[0] == "Anonymous marking exemption codes: OPTO1: Individually distinct work; OPTO2: Reflection on development of own work; OPTO3:"
+        assert data[
+                   0] == "Anonymous marking exemption codes: OPTO1: Individually distinct work; OPTO2: Reflection on development of own work; OPTO3:"
 
-        assert data[3] == "Assessment Notes:" 
+        assert data[3] == "Assessment Notes:"
         self.assessment_notes = data[4]
 
-        assert data[6] == "Reassessment:" 
+        assert data[6] == "Reassessment:"
         self.reassessment = data[7]
 
-        assert data[9] == "Expected Methods of Delivery:" 
+        assert data[9] == "Expected Methods of Delivery:"
         self.method_of_delivery = data[10]
 
         assert data[12].strip() == "Programmes using this module:"
@@ -214,6 +217,6 @@ class Module:
         return {
             "description": self.description
         }
-    
+
     def __str__(self):
         return f"Module({self.code})"

@@ -136,7 +136,7 @@ class Module:
         assert data[41] == "Module Leader: "
         assert data[45] == "Module Appraiser(s) / Marker(s): "
 
-        self.full_name = data[11]
+        self.full_title = data[11]
         self.short_name = data[13]
         self.credit_value = data[21]
         self.credit_level = data[25]

@@ -16,8 +16,8 @@ keywords = load_keywords_file(k)
 p = import_path / "0325_Programme_Specification_for_Academics.txt"
 programme_file = ProgrammeFile(p)
 
-# m = import_path / "0324_Module_Specification_for_Academics.txt"
-# module_file = ModuleFile(m)
+m = import_path / "0324_Module_Specification_for_Academics.txt"
+module_file = ModuleFile(m)
 
 output_path = root / 'output'
 
@@ -36,7 +36,7 @@ def export(path, objects, code, name):
             detail_path = path / f"{obj.code}.txt"
             summary = defaultdict(int)
             summary[code] = obj.code
-            summary[name] = obj.full_title
+            summary[name] = obj.full_title            
             with detail_path.open('w') as detail_file:
                 for section, text in obj.corpora().items():
                     corpus = Corpus(section, text)
@@ -50,4 +50,4 @@ def export(path, objects, code, name):
                 summary_csv.writerow(summary)
 
 export(programme_path, programme_file.programmes(), 'programme code', 'programme full title')
-# export(module_path, module_file.modules(), 'module')
+export(module_path, module_file.modules(), 'module code', 'module full title')

@@ -1,35 +1,24 @@
 """Corpus instances are initialised with text and can calculate everything we need"""
 
 import nltk
+from nltk.stem import PorterStemmer
 
+stemmer = PorterStemmer()
 
 class Corpus:
     def __init__(self, label, text):
         self.label = label
         self.raw_string = text
         tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
+        stemmed = [stemmer.stem(t) for t in tokens]
         self.text = nltk.text.Text(tokens)
+        self.stemmed_text = nltk.text.Text(stemmed)
         self.vocab = self.text.vocab()
+        self.stemmed_vocab = self.stemmed_text.vocab()
 
     def analyse(self, keywords, **kwargs):
-        matches = {}
-        count = {}
-        concordances = {}
-        keys = self.vocab.keys()
-        for kw in keywords:
-            for key in keys:
-                if key.startswith(kw):
-                    try:
-                        matches[kw].append(key)
-                        count[kw] = count[kw] + self.vocab[key]
-                        newConcordances = [c for c in self.text.concordance_list(key, **kwargs)]
-                        for c in newConcordances:
-                            concordances[kw].append(c)
-                    except KeyError:
-                        matches[kw] = [key]
-                        count[kw] = self.vocab[key]
-                        concordances[kw] = self.text.concordance_list(key, **kwargs)
-        return [Result(key, count[key], concordances[key]) for key in matches.keys()]
+        matches = [kw for kw in keywords if kw in self.stemmed_vocab]
+        return [Result(kw, self.stemmed_vocab[kw], self.stemmed_text.concordance_list(kw, **kwargs)) for kw in matches]
 
     def __repr__(self):
         return f"Corpus({self.label})"

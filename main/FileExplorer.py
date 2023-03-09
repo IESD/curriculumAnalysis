@@ -54,7 +54,7 @@ def createStringVar(string):
 def createWindow():
     window = tk.Tk()
     window.title('File Explorer')
-    window.geometry("500x400")
+    # window.geometry("500x400")
     window.config(background="#D3D3D3")
     names = ['Programmes', 'Modules', 'Output']
     for name in names:

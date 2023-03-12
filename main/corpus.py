@@ -1,32 +1,33 @@
 """Corpus instances are initialised with text and can calculate everything we need"""
 
 import nltk
-from nltk.stem import PorterStemmer
+from nltk.stem import WordNetLemmatizer
 from collections import defaultdict
 
-stemmer = PorterStemmer()
+nltk.download('wordnet')
+lemmatizer = WordNetLemmatizer()
 
 class Corpus:
     def __init__(self, label, text):
         self.label = label
         self.raw_string = text
         self.tokens = [word.lower() for sent in nltk.sent_tokenize(text) for word in nltk.word_tokenize(sent)]
-        stemmed_tokens = [stemmer.stem(t) for t in self.tokens]
+        lemmatized_tokens = [lemmatizer.lemmatize(t) for t in self.tokens]
         self.text = nltk.text.Text(self.tokens)
-        self.stemmed_text = nltk.text.Text(stemmed_tokens)
+        self.lemmatized_text = nltk.text.Text(lemmatized_tokens)
         self.vocab = self.text.vocab()
-        self.stemmed_vocab = self.stemmed_text.vocab()
+        self.lemmatized_vocab = self.lemmatized_text.vocab()
 
     def analyse(self, keywords, **kwargs):
-        keywords = [stemmer.stem(kw) for kw in keywords]
-        matches = [kw for kw in keywords if self.stemmed_vocab[kw]]
+        keywords = [lemmatizer.lemmatize(kw) for kw in keywords]
+        matches = [kw for kw in keywords if self.lemmatized_vocab[kw]]
         concordances = defaultdict(list)
         for kw in matches:
-            for stem in self.stemmed_text.concordance_list(kw, **kwargs):
+            for stem in self.lemmatized_text.concordance_list(kw, **kwargs):
                 t = self.tokens[stem.offset - len(stem.left):stem.offset + len(stem.right) + 1]
                 t[stem.offset] = t[stem.offset].upper()
                 concordances[kw].append(' '.join(t))
-        return [Result(kw, self.stemmed_vocab[kw], concordances[kw]) for kw in matches]
+        return [Result(kw, self.lemmatized_vocab[kw], concordances[kw]) for kw in matches]
 
     def __repr__(self):
         return f"Corpus({self.label})"
@@ -48,7 +49,7 @@ if __name__ == "__main__":
     print(c.text)
     print(c.vocab)
     print(c)
-    result = c.analyse(['sustain'])
+    result = c.analyse(['sustainable', 'sustainability'])
     print(result)
     for r in result:
         print('-' * 20)

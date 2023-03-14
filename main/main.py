@@ -36,7 +36,7 @@ def export(path, objects, code, name):
             detail_path = path / f"{obj.code}.txt"
             summary = defaultdict(int)
             summary[code] = obj.code
-            summary[name] = obj.full_title            
+            summary[name] = obj.full_title
             with detail_path.open('w') as detail_file:
                 for section, text in obj.corpora().items():
                     corpus = Corpus(section, text)
@@ -46,8 +46,19 @@ def export(path, objects, code, name):
                         if r.count:
                             msg = f'found keyword "{r.keyword}" {r.count} times in "{section}"'
                             print(f"{'='*len(msg)}\n{msg}\n{'='*len(msg)}\n", file=detail_file)
-                            print("\n\n".join([f"'{' '.join(c.left)} {c.query.upper()} {' '.join(c.right)}'" for c in r.concordances]), "\n", file=detail_file)
+                            print("\n\n".join([f"'{c}'" for c in r.concordances]), "\n", file=detail_file)
                 summary_csv.writerow(summary)
 
-export(programme_path, programme_file.programmes(), 'programme code', 'programme full title')
-export(module_path, module_file.modules(), 'module code', 'module full title')
+# export(programme_path, programme_file.programmes(), 'programme code', 'programme full title')
+# export(module_path, module_file.modules(), 'module code', 'module full title')
+
+def extract(path, programme_output=programme_path, module_output=module_path):
+    with path.open('r', encoding='utf8') as file:
+        header = file.readlines()[2].strip()
+    if header == "Module Specification":
+        export(module_output, ModuleFile(path).modules(), 'module code', 'module full title')
+    else:
+        export(programme_output, ProgrammeFile(path).programmes(), 'programme code', 'programme full title')
+
+extract(p)
+extract(m)

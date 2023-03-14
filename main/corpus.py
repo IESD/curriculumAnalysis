@@ -25,7 +25,7 @@ class Corpus:
         for kw in matches:
             for stem in self.lemmatized_text.concordance_list(kw, **kwargs):
                 t = self.tokens[stem.offset - len(stem.left):stem.offset + len(stem.right) + 1]
-                t[stem.offset] = t[stem.offset].upper()
+                t[len(stem.left)] = t[len(stem.left)].upper()
                 concordances[kw].append(' '.join(t))
         return [Result(kw, self.lemmatized_vocab[kw], concordances[kw]) for kw in matches]
 

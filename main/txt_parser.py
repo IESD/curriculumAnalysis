@@ -1,6 +1,5 @@
 """Details of the structure of txt files, extract data into objects with properties"""
 
-
 def extractData(path, split_string):
     with path.open('r', encoding='utf8') as f:
         data = f.read()
@@ -13,24 +12,36 @@ def extractData(path, split_string):
             yield chunk
 
 
+def file_factory(path):
+    with path.open('r', encoding='utf8') as f:
+        header = f.readlines()[2].strip()
+    assert header in ["Module Specification", "Programme Specification"]
+    if header == "Module Specification":
+        return ModuleFile(path)
+    else:
+        return ProgrammeFile(path)
+
+
 class ProgrammeFile:
     stop = 'End of Programme Specification for'
+    type = 'programme'
 
     def __init__(self, path):
         self.path = path
 
-    def programmes(self):
+    def __iter__(self):
         for d in extractData(self.path, self.stop):
             yield Programme(d)
 
 
 class ModuleFile:
     stop = 'End of Module Specification for'
+    type = 'module'
 
     def __init__(self, path):
         self.path = path
 
-    def modules(self):
+    def __iter__(self):
         for d in extractData(self.path, self.stop):
             yield Module(d)
 
@@ -61,7 +72,6 @@ class Programme:
 
         data = data[24:]
         self.something = "\n".join(aggregate_until(data, "Faculty: "))
-        # print(self.something)
         assert data[0] == "Faculty: "
         self.faculty = data[2]
         assert data[4] == "School: "
@@ -171,17 +181,12 @@ class Module:
         assert data[0] == "Module Pre-requisites:"
         data = data[1:]
 
-        # self.accreditation = aggregate_until(data, "Module Pre-requisites:")
-        # assert data[0] == "Module Pre-requisites:"
-        # data = data[1:]
-
         self.prerequisites = aggregate_until(data, "Module Description:")
         assert data[0] == "Module Description:"
         assert data[3] == "Learning Outcomes:"
 
         self.description = data[1]
         self.learning_outcomes = data[4]
-        # if self.prerequisites: print(self.prerequisites)
 
         assert data[6].strip() == "Evaluation:"
 

@@ -13,6 +13,52 @@ import_path = root / "import"
 k = import_path /  'keywords.txt'
 keywords = load_keywords_file(k)
 
+class Analysis:
+    def __init__(self, path, keywords):
+        self.file = file_factory(path)
+        self.keywords = keywords
+
+    @property
+    def type(self):
+        return self.file.type
+
+    def __iter__(self):
+        for obj in self.file:
+            for section, text in obj.corpora().items():
+                corpus = Corpus(section, text)
+                for result in corpus.analyse(self.keywords):
+                    yield obj, section, result
+
+
+class Exporter:
+    def __init__(self, output_path):
+        self.output_path = output_path
+
+    def export(self, analysis):
+        path = self.output_path / f"{analysis.type}s"
+        path.mkdir(exist_ok=True)
+        code_header = f"{analysis.type} code"
+        name = f"{analysis.type} full title"
+        summary_path = path / 'summary.csv'
+        with summary_path.open('w') as summary_file:
+            summary_csv = DictWriter(summary_file, fieldnames=[code_header, name, *analysis.keywords])
+            summary_csv.writeheader()
+            for obj, section, result in analysis:
+                detail_path = path / f"{obj.code}.txt"
+                summary = defaultdict(int)
+                summary[code_header] = obj.code
+                summary[name] = obj.full_title
+                with detail_path.open('w') as detail_file:
+                    summary[result.keyword] += result.count
+                    if result.count:
+                        msg = f'found keyword "{result.keyword}" {result.count} times in "{section}"'
+                        print(f"{'='*len(msg)}\n{msg}\n{'='*len(msg)}\n", file=detail_file)
+                        print("\n\n".join([f"'{c}'" for c in result.concordances]), "\n", file=detail_file)
+                summary_csv.writerow(summary)
+
+
+
+
 def export(file_path):
     data_file = file_factory(file_path)
     path = output_path / f"{data_file.type}s"

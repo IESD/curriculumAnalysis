@@ -22,29 +22,6 @@ def file_factory(path):
         return ProgrammeFile(path)
 
 
-class ProgrammeFile:
-    stop = 'End of Programme Specification for'
-    type = 'programme'
-
-    def __init__(self, path):
-        self.path = path
-
-    def __iter__(self):
-        for d in extractData(self.path, self.stop):
-            yield Programme(d)
-
-
-class ModuleFile:
-    stop = 'End of Module Specification for'
-    type = 'module'
-
-    def __init__(self, path):
-        self.path = path
-
-    def __iter__(self):
-        for d in extractData(self.path, self.stop):
-            yield Module(d)
-
 
 def aggregate_until(data, end_item):
     result = []
@@ -225,3 +202,26 @@ class Module:
 
     def __str__(self):
         return f"Module({self.code})"
+
+
+class DataFile:
+    stop = None    
+
+    def __init__(self, path):
+        self.path = path
+
+    def __iter__(self):
+        for d in extractData(self.path, self.stop):
+            yield self.item_class(d)
+
+
+class ProgrammeFile(DataFile):
+    stop = 'End of Programme Specification for'
+    type = 'programme'
+    item_class = Programme
+
+
+class ModuleFile(DataFile):
+    stop = 'End of Module Specification for'
+    type = 'module'
+    item_class = Module

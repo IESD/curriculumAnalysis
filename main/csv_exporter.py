@@ -2,7 +2,7 @@ from csv import DictWriter
 
 from analysis import Analysis
 
-class Exporter:
+class CSVExporter:
     def __init__(self, file, output_path):
         self.file = file
         self.output_path = output_path / f"{self.file.type}s"

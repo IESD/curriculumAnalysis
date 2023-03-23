@@ -22,14 +22,17 @@ class Exporter:
                 total_matches = sum(summary_record.values())
                 summary_record[self.code_header] = obj.code
                 summary_record[self.name_header] = obj.full_title
-                if total_matches:
-                    detail_path = self.output_path / f"{obj.code}.txt"
-                    with detail_path.open('w') as detail_file:
-                        for kw, results in analysis.results.items():
-                            if summary_record[kw]:
-                                for section, examples in results.items():
-                                    if examples:
-                                        msg = f'found keyword "{kw}" {len(examples)} times in "{section}"'
-                                        print(f"{'='*len(msg)}\n{msg}\n{'='*len(msg)}\n", file=detail_file)
-                                        print("\n\n".join([f"'{c}'" for c in examples]), "\n", file=detail_file)
                 summary_csv.writerow(summary_record)
+                if not total_matches:
+                    continue
+                detail_path = self.output_path / f"{obj.code}.txt"
+                with detail_path.open('w') as detail_file:
+                    for kw, results in analysis.results.items():
+                        if not summary_record[kw]:
+                            continue
+                        for section, examples in results.items():
+                            if not examples:
+                                continue
+                            msg = f'found keyword "{kw}" {len(examples)} times in "{section}"'
+                            print(f"{'='*len(msg)}\n{msg}\n{'='*len(msg)}\n", file=detail_file)
+                            print("\n\n".join([f"'{c}'" for c in examples]), "\n", file=detail_file)

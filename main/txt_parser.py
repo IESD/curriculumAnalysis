@@ -189,7 +189,9 @@ class Module:
         data = data[16:]
         programmes = aggregate_until(data, "Remarks:")
         self.programmes = [{k: v for k, v in zip(programme_keys, p.split('\t'))} for p in programmes]
-        assert data == ["Remarks:", "", ""]
+        # assert data == ["Remarks:", "", ""]
+        assert data[0].strip() == "Remarks:"
+        self.remarks = [remark for remark in data[1:] if remark]
 
     def corpora(self):
         """

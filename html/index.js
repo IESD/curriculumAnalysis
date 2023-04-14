@@ -8,11 +8,12 @@ async function loadJSON(url) {
 
 function elementFromItem(item) {
     console.log(item);
-    const result = document.createElement('li');
-    const title = document.createElement('span');
-    title.textContent = `${item.code} ${item.title}`;   
-    // const h2 = document.createElement('h2');
-    // h2.textContent = item.code;
+    const result = document.createElement('tr');
+    const code = document.createElement('td');
+    code.textContent = `${item.code}`;
+    result.append(code)
+    const title = document.createElement('td');
+    title.textContent = `${item.title}`;
     result.append(title);
     return result;
 }

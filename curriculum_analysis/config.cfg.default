@@ -1,0 +1,4 @@
+[curriculumAnalysis]
+keywords_path = ~/.curriculumAnalysis/keywords.txt
+outpath = output
+format = json

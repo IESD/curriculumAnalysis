@@ -3,7 +3,7 @@
 import nltk
 from nltk.stem import WordNetLemmatizer
 
-nltk.download('wordnet')
+nltk.download('wordnet', quiet=True)
 lemmatizer = WordNetLemmatizer()
 
 def slice_from_concordance(con):

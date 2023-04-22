@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+  "curriculum_analysis/config.cfg.default",
+  "curriculum_analysis/html/*",
+  "**/*.py",  
+]
+
+[project]
+name = "curriculum_analysis"
+version = "0.1.1"
+authors = [
+  { name="Graeme Stuart", email="gstuart@dmu.ac.uk" },
+  { name="Tom Harrison" },
+]
+description = "A simple tool for analysing DMU module and programme specifications with respect to provided keywords."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+  'nltk >= 3.8.1',
+]
+
+[project.urls]
+"Homepage" = "https://github.com/IESD/curriculumAnalysis"
+"Bug Tracker" = "https://github.com/IESD/curriculumAnalysis/issues"
+
+[project.scripts]
+curriculum-analysis = "curriculum_analysis.main:cli"

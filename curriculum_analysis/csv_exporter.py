@@ -1,6 +1,6 @@
 from csv import DictWriter
 
-from analysis import Analysis
+from .analysis import Analysis
 
 class CSVExporter:
     def __init__(self, file, output_path):

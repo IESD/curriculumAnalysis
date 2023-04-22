@@ -32,16 +32,19 @@ def main(filename, conf):
     config.read(conf_path)
 
     # Load keywords
-    keyword_path = Path(config.get("curriculummAnalysis", "keywords_path")).expanduser()
+    keyword_path = Path(config.get("curriculumAnalysis", "keywords_path")).expanduser()
+    if not keyword_path.exists():
+        default = (Path(__file__).parent / 'keywords.txt').read_text()
+        keyword_path.write_text(default);
+        
     keywords = load_keywords_file(keyword_path)
-
 
     # load the data
     file = file_factory(Path(filename).expanduser())
 
     # Generate an analysis
-    outpath = Path(config.get("curriculummAnalysis", "outpath")).expanduser()
-    format = config.get("curriculummAnalysis", "format")
+    outpath = Path(config.get("curriculumAnalysis", "outpath")).expanduser()
+    format = config.get("curriculumAnalysis", "format")
     exporter = exporters[format](file, outpath)
 
     # Export it

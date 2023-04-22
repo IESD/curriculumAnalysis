@@ -1,6 +1,6 @@
 import json
 
-from analysis import Analysis
+from .analysis import Analysis
 
 class JSONExporter:
     def __init__(self, file, output_path):

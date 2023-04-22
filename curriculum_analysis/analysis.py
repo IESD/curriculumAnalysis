@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from corpus import Corpus
+from .corpus import Corpus
 
 
 class Analysis:

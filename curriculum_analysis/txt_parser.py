@@ -96,7 +96,9 @@ class Programme:
         data = data[2:]
         values = aggregate_until(data, 'Any programme-specific differences or regulations:')
         self.modules = [{k: v for k, v in zip(keys, v.split('\t'))} for v in values]
-        assert data == ['Any programme-specific differences or regulations:', '', '']
+        # assert data == ['Any programme-specific differences or regulations:', '', '']
+        assert data[0].strip() == 'Any programme-specific differences or regulations:'
+        self.differences = [dif for dif in data[1:] if dif]
 
     def __str__(self):
         return f"Programme({self.code})"

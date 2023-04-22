@@ -32,7 +32,7 @@ format = json
 
 Changing these values will influence the default settings.
 
-# Example usage
+## Example usage
 
 ```
 curriculum-analysis modules.txt

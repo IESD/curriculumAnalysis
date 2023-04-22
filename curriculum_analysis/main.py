@@ -18,7 +18,13 @@ def main(filename, conf):
     # check the provided config file exists
     conf_path = Path(conf).expanduser()
     if not conf_path.exists():
-        print(f"Missing configuration file at {conf_path}")
+        print(f"Wait! We are missing the configuration file at {conf_path}")
+        default = (Path(__file__).parent / 'config.cfg.default').read_text()
+        conf_path.write_text(default);
+        print(f"We added this configuration to the file for you.\n")
+        print(default)
+        print(f"For now, we are aborting.")
+        print(f"Please check/edit the configuration before running again.")
         exit()
 
     # load the config file

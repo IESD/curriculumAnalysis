@@ -27,3 +27,7 @@ h1 {
 #title_header {
     width: 100%;
 }
+
+#target tr:not(.found) {
+    color: grey;
+}

@@ -13,6 +13,8 @@ from .js_exporter import JSExporter
 
 logging.basicConfig(level="INFO")
 
+log = logging.getLogger(__name__)
+
 exporters = {
     'csv': CSVExporter,
     'json': JSONExporter,    
@@ -35,7 +37,7 @@ def main(filename, conf):
 
     # load the config file
     config = ConfigParser()
-
+    log.info(f"reading config from {conf_path}")
     config.read(conf_path)
 
     # Load keywords

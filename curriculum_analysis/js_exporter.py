@@ -36,6 +36,7 @@ class JSExporter:
         }}
         """
         log.info(f"exporting results as HTML to {self.output_path.absolute()}")
+        log.setLevel('WARN')
         copy_tree(str(Path(__file__).parent / 'html'), str(self.output_path), update=True)
         with self.data_path.open('w') as data_script:
             data_script.write(js_string)

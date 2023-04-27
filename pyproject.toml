@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 include = [
   "curriculum_analysis/config.cfg.default",
   "curriculum_analysis/html/*",
+  "curriculum_analysis/keywords.txt",
   "**/*.py",  
 ]
 

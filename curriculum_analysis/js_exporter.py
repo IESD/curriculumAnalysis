@@ -10,8 +10,8 @@ log = logging.getLogger(__name__)
 class JSExporter:
     def __init__(self, file, output_path):
         self.file = file
-        self.output_path = output_path
-        self.output_path.mkdir(exist_ok=True)
+        self.output_path = output_path / file.path.stem
+        self.output_path.mkdir(parents=True, exist_ok=True)
         self.code_header = f"{self.file.type} code"
         self.name_header = f"{self.file.type} full title"
         self.data_path = self.output_path / 'data.js'

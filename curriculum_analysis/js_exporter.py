@@ -21,7 +21,9 @@ class JSExporter:
             record = {
                 "code": obj.code,
                 "title": obj.full_title,
-                "data": analysis.results
+                "data": analysis.results,
+                "summary": analysis.summary,
+                "raw": analysis.raw()
             }
             result.append(record)
         json_string = json.dumps(result)

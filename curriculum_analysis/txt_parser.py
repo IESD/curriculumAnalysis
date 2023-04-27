@@ -207,7 +207,8 @@ class Module:
         Make adjustments here to control what we actually analyse.
         """
         return {
-            "description": self.description
+            "description": self.description,
+            "learning_outcomes": self.learning_outcomes
         }
 
     def __str__(self):

@@ -22,6 +22,7 @@ exporters = {
 def main(filename, conf):
     # check the provided config file exists
     conf_path = Path(conf).expanduser()
+    conf_path.parent.mkdir(exist_ok=True)
     if not conf_path.exists():
         print(f"Wait! We are missing the configuration file at {conf_path}")
         default = (Path(__file__).parent / 'config.cfg.default').read_text()
@@ -34,6 +35,7 @@ def main(filename, conf):
 
     # load the config file
     config = ConfigParser()
+
     config.read(conf_path)
 
     # Load keywords
@@ -41,7 +43,6 @@ def main(filename, conf):
     if not keyword_path.exists():
         default = (Path(__file__).parent / 'keywords.txt').read_text()
         keyword_path.write_text(default);
-        
     keywords = load_keywords_file(keyword_path)
 
     # load the data

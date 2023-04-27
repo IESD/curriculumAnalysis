@@ -21,3 +21,6 @@ class Analysis:
             section: c.delemmatized_concordance_list(keyword, **kwargs) 
             for section, c in self.corpora.items()
         }
+    
+    def raw(self):
+        return {section: self.corpora[section].raw_string for section in self.corpora.keys()}

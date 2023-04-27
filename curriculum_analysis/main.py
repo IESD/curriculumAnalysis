@@ -3,12 +3,15 @@
 from configparser import ConfigParser
 from pathlib import Path
 from argparse import ArgumentParser
+import logging
 
 from .keywords import load_keywords_file
 from .txt_parser import file_factory
 from .csv_exporter import CSVExporter
 from .json_exporter import JSONExporter
 from .js_exporter import JSExporter
+
+logging.basicConfig(level="INFO")
 
 exporters = {
     'csv': CSVExporter,

@@ -1,8 +1,11 @@
 import json
 from pathlib import Path
 from distutils.dir_util import copy_tree
+import logging
 
 from .analysis import Analysis
+
+log = logging.getLogger(__name__)
 
 class JSExporter:
     def __init__(self, file, output_path):
@@ -32,6 +35,7 @@ class JSExporter:
             return {json_string}; 
         }}
         """
+        log.info(f"exporting results as HTML to {self.output_path.absolute()}")
         copy_tree(str(Path(__file__).parent / 'html'), str(self.output_path), update=True)
         with self.data_path.open('w') as data_script:
             data_script.write(js_string)

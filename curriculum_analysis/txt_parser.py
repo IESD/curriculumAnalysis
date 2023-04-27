@@ -1,4 +1,7 @@
 """Details of the structure of txt files, extract data into objects with properties"""
+import logging
+
+log = logging.getLogger(__name__)
 
 def extractData(path, split_string):
     with path.open('r', encoding='utf8') as f:
@@ -13,12 +16,15 @@ def extractData(path, split_string):
 
 
 def file_factory(path):
+    log.info(f"Inspecting file: {path.absolute()}")
     with path.open('r', encoding='utf8') as f:
         header = f.readlines()[2].strip()
     assert header in ["Module Specification", "Programme Specification"]
     if header == "Module Specification":
+        log.info("Looks like a list of modules")
         return ModuleFile(path)
     else:
+        log.info("Looks like a list of programmes")
         return ProgrammeFile(path)
 
 

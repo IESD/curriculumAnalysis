@@ -9,21 +9,25 @@ function addMetaData(item) {
 }
 
 function elementFromItem(item) {
-    const result = document.createElement('tr');
+    const row = document.createElement('tr');
     const code = document.createElement('td');
-    code.textContent = `${item.code}`;
     const title = document.createElement('td');
-    title.textContent = `${item.title}`;
     const details = document.createElement('td');
+
+    const link = document.createElement('a');
+    link.href = `./module.html?code=${item.code}`;
+    link.textContent = `${item.code}`;
+    code.append(link);
+    title.textContent = `${item.title}`;
     details.textContent = item.count;
     if(item.count) {
-        result.classList.add("found")
+        row.classList.add("found")
     }
-    result.append(code, title, details);
-    return result;
+    row.append(code, title, details);
+    return row;
 }
 
 loadJSON('summary.json').then(data => {
-    const articles = data.map(addMetaData).map(elementFromItem);
+    const articles = data.map(addMetaData).sort((a, b) => b.count - a.count).map(elementFromItem);
     target.append(...articles);
 })

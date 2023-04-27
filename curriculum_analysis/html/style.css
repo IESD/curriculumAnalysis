@@ -1,15 +1,61 @@
-h1 {
-    font-family: Arial, Helvetica, sans-serif;
-    margin: 20px 0px;
-    font-size: 64px;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=swap');
+
+body {
+    margin: 0;
+    font-family: "Poppins", Arial, Helvetica, sans-serif;
+    max-width: 900px;
+    margin-inline: auto;
+}
+header {
+    padding-inline: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-block: 1rem;
+    background-color: #2E6F6C;
+    color: white;
+}
+header * {
+    line-height: 1em;
+    margin: 0;
+}
+header div {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+header a {
+    color: inherit;
+}
+
+article {
+    background: #eee;
+    padding: 1rem 2rem;
+    margin-bottom: 1rem;
+    border-radius: 3px;
+}
+.keyword {
+    font-weight: 200;
+    background-color: hsl(200, 50%, 70%);
+    padding: 0.1em 0.25em;
+    border-radius: 1em;
+}
+.location {
+    font-weight: 200;
+    background-color: hsl(250, 50%, 70%);
+    padding: 0.1em 0.25em;
+    border-radius: 1em;
+}
+
+#itemName {
+    font-size: 1.4em;
 }
 #target {
-    font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
 }
 #target td, #target th {
     border: 1px solid #c3c3c3;
-    padding: 8px;
+    padding: 0.25em 0.5em;
 }
 #target tr:nth-child(even){
     background-color: #f2f2f2;
@@ -18,8 +64,6 @@ h1 {
     background-color: #ddd;
 }
 #target th {
-  padding-top: 12px;
-  padding-bottom: 12px;
   text-align: left;
   background-color: #2E6F6C;
   color: white;

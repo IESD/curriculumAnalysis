@@ -17,7 +17,7 @@ def extractData(path, split_string):
 
 def file_factory(path):
     log.info(f"Inspecting file: {path.absolute()}")
-    with path.open('r', encoding='utf8') as f:
+    with path.open('r', encoding='utf8', errors='surrogateescape') as f:
         header = f.readlines()[2].strip()
     assert header in ["Module Specification", "Programme Specification"]
     if header == "Module Specification":

@@ -5,14 +5,14 @@ build-backend = "hatchling.build"
 [tool.hatch.build]
 include = [
   "curriculum_analysis/config.cfg.default",
-  "curriculum_analysis/html/*",
   "curriculum_analysis/keywords.txt",
+  "curriculum_analysis/html/*",
   "**/*.py",  
 ]
 
 [project]
 name = "curriculum_analysis"
-version = "0.2.2"
+version = "0.2.3"
 authors = [
   { name="Graeme Stuart", email="gstuart@dmu.ac.uk" },
   { name="Tom Harrison" },

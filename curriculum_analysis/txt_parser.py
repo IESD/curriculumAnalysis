@@ -4,7 +4,7 @@ import logging
 log = logging.getLogger(__name__)
 
 def extractData(path, split_string):
-    with path.open('r', encoding='utf8') as f:
+    with path.open('r', encoding='utf8', errors='surrogateescape') as f:
         data = f.read()
         chunks = data.split(split_string)
         chunks = [ch.splitlines() for ch in chunks]

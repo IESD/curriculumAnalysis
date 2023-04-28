@@ -4,6 +4,8 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 
 nltk.download('wordnet', quiet=True)
+nltk.download('punkt', quiet=True)
+
 lemmatizer = WordNetLemmatizer()
 
 def slice_from_concordance(con):

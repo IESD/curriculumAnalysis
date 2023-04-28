@@ -13,6 +13,7 @@ class JSExporter:
         self.output_path = output_path / file.path.stem
         self.output_path.mkdir(parents=True, exist_ok=True)
         self.data_path = self.output_path / 'data.js'
+        self.pages_path = output_path / 'pages.js'
 
     def export(self, keywords):
         result = []
@@ -38,3 +39,24 @@ class JSExporter:
         copy_tree(str(Path(__file__).parent / 'html'), str(self.output_path), update=True)
         with self.data_path.open('w') as data_script:
             data_script.write(js_string)
+        self.recreate_index()
+    
+    def recreate_index(self):
+        result = []
+        folders = [folder for folder in self.output_path.parent().iterdir() if folder.is_dir()]
+        for folder in folders:
+            url = folder / 'index.html'
+            if url.exists():
+                page = {
+                    'url': url
+                }
+                result.append(page)
+        json_string = json.dumps(result)
+        js_string = f"""
+        async function loadJSON() {{
+            return {json_string}
+        }}
+        """
+        copy_tree(str(Path(__file__).parent / 'top-level'), str(self.output_path.parent()), update=True)
+        with self.pages_path.open('w') as pages_script:
+            pages_script.write(js_string)

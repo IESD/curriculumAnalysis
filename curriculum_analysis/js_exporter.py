@@ -19,13 +19,12 @@ class JSExporter:
         result = []
         for obj in self.file:
             analysis = Analysis(obj)
-            analysis.analyse(keywords)
+            analysis.analyse_alternative(keywords)
             record = {
                 "code": obj.code,
                 "title": obj.full_title,
-                "data": analysis.results,
-                "summary": analysis.summary,
-                "raw": analysis.raw()
+                "results": analysis.alternative,
+                "total": analysis.total,
             }
             result.append(record)
         json_string = json.dumps(result)

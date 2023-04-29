@@ -33,18 +33,61 @@ function articleFromInstance({keyword, location, text}) {
 }
 
 function generatePage(item) {
-    console.log(item);
-    itemCode.textContent = `${item.code}`;
-    itemName.textContent = `${item.title}`;
+    itemCode.textContent = item.code;
+    itemName.textContent = item.title;
 
-    const data = Object.entries(item.summary).filter(([kw, count]) => {
-        return count;
-    }).map(([kw, count]) => {
-        return Object.entries(item.data[kw]).filter(([location, instances]) => instances.length).map(([location, instances]) => {
-            return {location: location, text: item.raw[location], keyword: kw}
-        }).flat();
-    }).flat();
-    target.append(sectionFromData(data));
+    const results = Object.entries(item.results).filter(([section, {keywords, tokens, total}]) => {
+        return tokens.length;
+    })
+    
+    console.log(results);
+
+    const articles = results.map(([section, {keywords, tokens, total}]) => {
+        const result = document.createElement('article');
+        const h2 = document.createElement("h2");
+        const pills = document.createElement("div");
+        const highlightedText = document.createElement("p");
+        const totalSpan = document.createElement('span');
+
+        pills.classList.add("pills");
+        h2.textContent = section
+        totalSpan.textContent = `(found ${total})`;
+
+        const hueStep = 360 / Object.keys(keywords).length;
+        let hue = 0;
+
+        Object.entries(keywords).forEach(([kw, indices]) => {
+            hue += hueStep;
+            for(const index of indices) {
+                tokens[index] = `<span class="keyword" style="background: hsl(${hue}, 50%, 70%)">${tokens[index]}</span>`;
+            }
+            if(indices.length) {
+                const pill = document.createElement('span');
+                const count = document.createElement('span');
+                pill.classList.add('pill');
+                count.classList.add('count');
+                pill.textContent = kw;
+                pill.style.background = `hsl(${hue}, 50%, 70%)`;
+                count.textContent = indices.length;
+                pill.append(count);
+                pills.append(pill);
+            }
+        });
+        text = tokens.join(' ');
+        highlightedText.innerHTML = text;
+        result.append(h2, pills, highlightedText);
+        return result;
+    })
+    target.append(...articles);
+
+    // const data = Object.entries(item.summary).filter(([kw, count]) => {
+    //     return count;
+    // }).map(([kw, count]) => {
+    //     return Object.entries(item.data[kw]).filter(([location, instances]) => instances.length).map(([location, instances]) => {
+    //         return {location: location, text: item.raw[location], keyword: kw}
+    //     }).flat();
+    // }).flat();
+    // target.append(sectionFromData(data));
 }
 
 loadJSON('summary.json').then(data => {

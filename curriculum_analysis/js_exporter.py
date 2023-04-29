@@ -43,12 +43,12 @@ class JSExporter:
     
     def recreate_index(self):
         result = []
-        folders = [folder for folder in self.output_path.parent().iterdir() if folder.is_dir()]
+        folders = [folder for folder in self.output_path.parent.iterdir() if folder.is_dir()]
         for folder in folders:
-            url = folder / 'index.html'
-            if url.exists():
+            if (folder / 'index.html').exists():
                 page = {
-                    'url': url
+                    'title': folder.name,
+                    'url': str(Path(folder.name) / 'index.html')
                 }
                 result.append(page)
         json_string = json.dumps(result)
@@ -57,6 +57,6 @@ class JSExporter:
             return {json_string}
         }}
         """
-        copy_tree(str(Path(__file__).parent / 'top-level'), str(self.output_path.parent()), update=True)
+        copy_tree(str(Path(__file__).parent / 'top-level'), str(self.output_path.parent), update=True)
         with self.pages_path.open('w') as pages_script:
             pages_script.write(js_string)

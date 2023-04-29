@@ -5,8 +5,8 @@ function elementFromItem(item) {
     const url = document.createElement('td');
 
     const link = document.createElement('a');
-    link.href = `${item.url}`;
-    link.textContent = `${item.url}`;
+    link.href = item.url;
+    link.textContent = item.title;
     url.append(link);
     row.append(url);
     return row;

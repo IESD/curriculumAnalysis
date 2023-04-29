@@ -34,6 +34,9 @@ article {
     margin-bottom: 1rem;
     border-radius: 3px;
 }
+table {
+    width: 100%;
+}
 .keyword {
     font-weight: 200;
     background-color: hsl(200, 50%, 70%);

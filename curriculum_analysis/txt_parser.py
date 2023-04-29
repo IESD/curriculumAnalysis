@@ -112,7 +112,7 @@ class Programme:
     def corpora(self):
         return {
             "description": self.description,
-            "learning_teaching_and_assessment_strategies": self.learning_teaching_and_assessment_strategies,
+            "learning, teaching and assessment strategies": self.learning_teaching_and_assessment_strategies,
             "learning outcomes": self.learning_outcomes
         }
 

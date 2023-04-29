@@ -27,7 +27,7 @@ The default configuration file (`config.cfg`) is placed in the users home direct
 [curriculummAnalysis]
 keywords_path = ~/.curriculumAnalysis/keywords.txt
 outpath = ~/.curriculumAnalysis/output
-format = json
+format = js
 ```
 
 Changing these values will influence the default settings.
@@ -37,4 +37,3 @@ Changing these values will influence the default settings.
 ```
 curriculum-analysis modules.txt
 ```
-

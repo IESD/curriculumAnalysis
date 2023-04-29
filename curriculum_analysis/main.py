@@ -28,7 +28,7 @@ def main(filename, conf):
     if not conf_path.exists():
         print(f"Wait! We are missing the configuration file at {conf_path}")
         default = (Path(__file__).parent / 'config.cfg.default').read_text()
-        conf_path.write_text(default);
+        conf_path.write_text(default)
         print(f"We added this configuration to the file for you.\n")
         print(default)
         print(f"For now, we are aborting.")
@@ -44,7 +44,7 @@ def main(filename, conf):
     keyword_path = Path(config.get("curriculumAnalysis", "keywords_path")).expanduser()
     if not keyword_path.exists():
         default = (Path(__file__).parent / 'keywords.txt').read_text()
-        keyword_path.write_text(default);
+        keyword_path.write_text(default)
     keywords = load_keywords_file(keyword_path)
 
     # load the data

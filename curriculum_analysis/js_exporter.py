@@ -12,21 +12,19 @@ class JSExporter:
         self.file = file
         self.output_path = output_path / file.path.stem
         self.output_path.mkdir(parents=True, exist_ok=True)
-        self.code_header = f"{self.file.type} code"
-        self.name_header = f"{self.file.type} full title"
         self.data_path = self.output_path / 'data.js'
+        self.pages_path = output_path / 'pages.js'
 
     def export(self, keywords):
         result = []
         for obj in self.file:
             analysis = Analysis(obj)
-            analysis.analyse(keywords)
+            analysis.analyse_alternative(keywords)
             record = {
                 "code": obj.code,
                 "title": obj.full_title,
-                "data": analysis.results,
-                "summary": analysis.summary,
-                "raw": analysis.raw()
+                "results": analysis.alternative,
+                "total": analysis.total,
             }
             result.append(record)
         json_string = json.dumps(result)
@@ -40,3 +38,24 @@ class JSExporter:
         copy_tree(str(Path(__file__).parent / 'html'), str(self.output_path), update=True)
         with self.data_path.open('w') as data_script:
             data_script.write(js_string)
+        self.recreate_index()
+    
+    def recreate_index(self):
+        result = []
+        folders = [folder for folder in self.output_path.parent.iterdir() if folder.is_dir()]
+        for folder in folders:
+            if (folder / 'index.html').exists():
+                page = {
+                    'title': folder.name,
+                    'url': str(Path(folder.name) / 'index.html')
+                }
+                result.append(page)
+        json_string = json.dumps(result)
+        js_string = f"""
+        async function loadJSON() {{
+            return {json_string}
+        }}
+        """
+        copy_tree(str(Path(__file__).parent / 'top-level'), str(self.output_path.parent), update=True)
+        with self.pages_path.open('w') as pages_script:
+            pages_script.write(js_string)

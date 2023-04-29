@@ -14,8 +14,8 @@ include = [
 name = "curriculum_analysis"
 version = "0.2.5"
 authors = [
-  { name="Graeme Stuart", email="gstuart@dmu.ac.uk" },
   { name="Tom Harrison" },
+  { name="Graeme Stuart", email="gstuart@dmu.ac.uk" },
 ]
 description = "A simple tool for analysing DMU module and programme specifications with respect to provided keywords."
 readme = "README.md"

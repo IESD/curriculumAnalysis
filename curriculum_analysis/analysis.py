@@ -11,15 +11,18 @@ class Analysis:
         self.corpora = {section: Corpus(section, text) for section, text in obj.corpora().items()}
         self.results = {}
         self.summary = defaultdict(int)
+        self.total = 0
 
     def analyse(self, keywords, **kwargs):
+        self.keywords = keywords
         for kw in keywords:
             result = self.check_for_keyword(kw, **kwargs)
             self.results[kw] = result
             for section in result:
                 self.summary[kw] += len(result[section])
-        if sum(self.summary.values()):
-            log.debug(f"found '{sum(self.summary.values())}' keywords in {self.name}")
+        self.total = sum(self.summary.values())
+        if self.total:
+            log.debug(f"found '{self.total}' keywords in {self.name}")
 
     def check_for_keyword(self, keyword, **kwargs):
         return {

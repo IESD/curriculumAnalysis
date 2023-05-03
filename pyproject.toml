@@ -7,7 +7,8 @@ include = [
   "curriculum_analysis/config.cfg.default",
   "curriculum_analysis/keywords.txt",
   "curriculum_analysis/html/*",
-  "**/*.py",  
+  "curriculum_analysis/top-level/*",
+  "**/*.py",
 ]
 
 [project]

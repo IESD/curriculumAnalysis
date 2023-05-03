@@ -32,9 +32,10 @@ class Corpus:
         self.lemmatized_vocab = self.lemmatized_text.vocab()
 
     def find_indices(self, keyword):
-        if keyword not in self.lemmatized_vocab:
+        lemmatized_keyword = lemmatizer.lemmatize(keyword)
+        if lemmatized_keyword not in self.lemmatized_vocab:
             return []
-        return [i for i, token in enumerate(self.lemmatized_tokens) if token == keyword]
+        return [i for i, token in enumerate(self.lemmatized_tokens) if token == lemmatized_keyword]
 
 
     def delemmatized_concordance_list(self, kw, **kwargs):

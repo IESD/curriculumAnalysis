@@ -24,7 +24,7 @@ If no configuration is given, then the default configuration will be used.
 The default configuration file (`config.cfg`) is placed in the users home directory under a hidden folder `~/.curriculumAnalysis`.
 
 ```
-[curriculummAnalysis]
+[curriculumAnalysis]
 keywords_path = ~/.curriculumAnalysis/keywords.txt
 outpath = ~/.curriculumAnalysis/output
 format = js

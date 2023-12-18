@@ -45,15 +45,19 @@ class Programme:
     def __init__(self, data):
         assert data[3] == "Programme Specification"
         assert data[9] == "Programme Full Title: "
-        assert data[15] == "Programme Short Title: "
         self.full_title = data[11]
         self.short_title = data[13]
-        assert data[17] == "Programme Code: "
-        assert data[19] == "Programme Type: "
-        self.type = data[21]
-        self.code = data[23]
+        assert data[15] == "Programme Short Title: "
+        assert data[17] == "Apprenticeship Standard Title:"
+        assert data[20] == "Apprenticeship Standard Reference Code: "
+        assert data[24] == "ESFA LARS Code: "
+        assert data[28] == "End Point Assessment Type: "
+        assert data[32] == "Programme Code: "
+        assert data[34] == "Programme Type: "
+        self.type = data[36]
+        self.code = data[38]
 
-        data = data[24:]
+        data = data[39:]
         self.something = "\n".join(aggregate_until(data, "Faculty: "))
         assert data[0] == "Faculty: "
         self.faculty = data[2]
@@ -64,9 +68,9 @@ class Programme:
         assert data[12] == "Programme Leader: "
         self.programme_leader = data[14]
         assert data[16] == "Mode of Delivery: "
-        assert data[18] == "Normal Duration: "
-        self.mode = data[22]
+        assert data[18] == "Normal Duration (including duration for EPA): "
         self.duration = data[20]
+        self.mode = data[22]
         assert data[24] == "Offered at the following sites:"
 
         data = data[25:]

@@ -24,6 +24,6 @@ class JSONExporter:
                 "data": analysis.results
             }
             result.append(record)
-        with self.summary_path.open('w') as summary_file:
+        with self.summary_path.open('w', encoding='utf8', errors='surrogateescape') as summary_file:
             json.dump(result, summary_file)
         copy_tree(str(Path(__file__).parent / 'html'), str(self.output_path), update=True)

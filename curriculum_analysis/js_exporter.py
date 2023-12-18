@@ -36,7 +36,7 @@ class JSExporter:
         """
         log.info(f"exporting results as HTML to {self.output_path.absolute()}")
         copy_tree(str(Path(__file__).parent / 'html'), str(self.output_path), update=True)
-        with self.data_path.open('w') as data_script:
+        with self.data_path.open('w', encoding='utf8', errors='surrogateescape') as data_script:
             data_script.write(js_string)
         self.recreate_index()
         log.info(f"See {self.output_path.absolute() / 'index.html'}")
@@ -59,5 +59,5 @@ class JSExporter:
         }}
         """
         copy_tree(str(Path(__file__).parent / 'top-level'), str(self.output_path.parent), update=True)
-        with self.pages_path.open('w') as pages_script:
+        with self.pages_path.open('w', encoding='utf8', errors='surrogateescape') as pages_script:
             pages_script.write(js_string)

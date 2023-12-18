@@ -12,7 +12,7 @@ class CSVExporter:
         self.summary_path = self.output_path / 'summary.csv'
 
     def export(self, keywords):
-        with self.summary_path.open('w') as summary_file:
+        with self.summary_path.open('w', encoding='utf8', errors='surrogateescape') as summary_file:
             summary_csv = DictWriter(summary_file, fieldnames=[self.code_header, self.name_header, *keywords])
             summary_csv.writeheader()
             for obj in self.file:
@@ -26,7 +26,7 @@ class CSVExporter:
                 if not total_matches:
                     continue
                 detail_path = self.output_path / f"{obj.code}.txt"
-                with detail_path.open('w') as detail_file:
+                with detail_path.open('w', encoding='utf8', errors='surrogateescape') as detail_file:
                     for kw, results in analysis.results.items():
                         if not summary_record[kw]:
                             continue

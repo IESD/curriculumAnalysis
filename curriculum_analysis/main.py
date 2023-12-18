@@ -21,6 +21,8 @@ exporters = {
     'js': JSExporter,    
 }
 
+# changes in the input file layout will require an update to the txt_parser.py file with the new layout
+
 def main(filename, conf):
     # check the provided config file exists
     conf_path = Path(conf).expanduser()

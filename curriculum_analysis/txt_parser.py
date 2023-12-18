@@ -15,6 +15,9 @@ def extractData(path, split_string):
             yield chunk
 
 
+# If the 3rd line of the file reads "Module Specification", then it is assigned to ModuleFile
+# Else if the 3rd line reads "Programme Specification", then it is assigned to ProgrammeFile
+
 def file_factory(path):
     log.info(f"Inspecting file: {path.absolute()}")
     with path.open('r', encoding='utf8', errors='surrogateescape') as f:
@@ -40,13 +43,20 @@ def aggregate_until(data, end_item):
         result.append(row)
     return result
 
+# Programme file (edit to accommodate a change in file layout)
+# Class attributes extract the data from a specific line or multiple lines
 
 class Programme:
     def __init__(self, data):
+        # line 3 should contain the text "Programme Specification"
         assert data[3] == "Programme Specification"
+        # line 9 should contain the text "Programme Full Title: "
         assert data[9] == "Programme Full Title: "
+        # the full title of the programme should be on line 11
         self.full_title = data[11]
+        # the short title of the programme should be on line 13
         self.short_title = data[13]
+        # etc.
         assert data[15] == "Programme Short Title: "
         assert data[17] == "Apprenticeship Standard Title:"
         assert data[20] == "Apprenticeship Standard Reference Code: "
@@ -120,13 +130,20 @@ class Programme:
             "learning outcomes": self.learning_outcomes
         }
 
+# Module file (edit to accommodate a change in file layout)
+# Class attributes extract the data from a specific line or multiple lines
 
 class Module:
     def __init__(self, data):
+        # the 3rd line must read "Module Specification"
         assert data[3] == "Module Specification"
+        # the 9th line must read "Module Full Title: "
         assert data[9] == "Module Full Title: "
+        # the 15th line must read "Module Short Title:"
         assert data[15] == "Module Short Title: "
+        # the 17th line must read "Module Code:"
         assert data[17] == "Module Code: "
+        # etc.
         assert data[19] == "Credit Value: "
         assert data[23] == "Credit Level: "
         assert data[29] == "Faculty: "
@@ -135,10 +152,15 @@ class Module:
         assert data[41] == "Module Leader: "
         assert data[45] == "Module Appraiser(s) / Marker(s): "
 
+        # the module's full title is extracted from the 11th line
         self.full_title = data[11]
+        # the module's short title is extracted from the 13th line
         self.short_name = data[13]
+        # the module's credit value is extracted from the 21st line
         self.credit_value = data[21]
+        # the module's credit level is extracted from the 25th line
         self.credit_level = data[25]
+        # etc.
         self.code = data[27]
         self.faculty = data[31]
         self.school = data[35]

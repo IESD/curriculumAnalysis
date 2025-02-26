@@ -80,7 +80,8 @@ class Programme:
 
         assert data[0] == "Awards Available:\t"
         award_keys = data[1].split('\t')
-        data = data[2:]
+        assert data[2] == "(X = Yes)"
+        data = data[3:]
         awards = aggregate_until(data, 'Relevant QAA subject benchmarking statement(s):')
         self.awards = [{k: v for k, v in zip(award_keys, a.split('\t'))} for a in awards]
 
@@ -101,14 +102,19 @@ class Programme:
         self.learning_outcomes = data[10].strip()
         data = data[12:]
         assert data[0].strip() == 'Module Details (across all module groups):'
-
         keys = data[1].split('\t')
-        data = data[2:]
+        assert data[2].strip() == "(X = Yes)	Must Pass"
+        assert data[3].strip() == "(X = Yes)	Has Pre-req"
+        assert data[4].strip() == "(X = Yes)	Campus"
+        keys.append(["Must Pass", "Has Pre-req", "Campus"])
+        data = data[5:]
         values = aggregate_until(data, 'Any programme-specific differences or regulations:')
         self.modules = [{k: v for k, v in zip(keys, v.split('\t'))} for v in values]
         # assert data == ['Any programme-specific differences or regulations:', '', '']
         assert data[0].strip() == 'Any programme-specific differences or regulations:'
-        self.differences = [dif for dif in data[1:] if dif]
+        assert data[3].strip() == "Programme Intake Codes in SAP:"
+        self.intake_codes = data[4].split(';')
+        self.differences = [dif for dif in data[5:] if dif]
 
     def __str__(self):
         return f"Programme({self.code})"
@@ -181,11 +187,10 @@ class Module:
 
         assessment_keys = data[7].split('\t')
         data = data[8:]
-        assert len(assessment_keys) == 8
+        assert len(assessment_keys) == 7
         assessments = aggregate_until(data, "Anonymous marking exemption codes:")
         self.assessments = [{k: v for k, v in zip(assessment_keys, a.split('\t'))} for a in assessments]
-        assert data[
-                   0] == "Anonymous marking exemption codes: OPTO1: Individually distinct work; OPTO2: Reflection on development of own work; OPTO3:"
+        assert data[0] == "Anonymous marking exemption codes: OPTO1: Individually distinct work; OPTO2: Reflection on development of own work; OPTO3:"
 
         assert data[3] == "Assessment Notes:"
         self.assessment_notes = data[4]

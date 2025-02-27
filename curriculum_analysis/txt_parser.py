@@ -12,7 +12,12 @@ def extractData(path, split_string):
         chunks[0] = ['deleteme', '', *chunks[0]]
         chunks = [ch[1:] for ch in chunks][:-1]
         for chunk in chunks:
-            yield chunk
+            if len(chunk) < 10:
+                pass
+            elif chunk[9] == "No data for the prompts selection - please refresh the report and re-enter your prompts":
+                continue
+            if len(chunk) > 2:
+                yield chunk
 
 
 def file_factory(path):
@@ -48,16 +53,16 @@ class Programme:
         self.full_title = data[11]
         self.short_title = data[13]
         assert data[15] == "Programme Short Title: "
-        assert data[17] == "Apprenticeship Standard Title:"
-        assert data[20] == "Apprenticeship Standard Reference Code: "
-        assert data[24] == "ESFA LARS Code: "
-        assert data[28] == "End Point Assessment Type: "
-        assert data[32] == "Programme Code: "
-        assert data[34] == "Programme Type: "
-        self.type = data[36]
-        self.code = data[38]
+        # assert data[17] == "Apprenticeship Standard Title:"
+        # assert data[20] == "Apprenticeship Standard Reference Code: "
+        # assert data[24] == "ESFA LARS Code: "
+        # assert data[28] == "End Point Assessment Type: "
+        _ = aggregate_until(data, "Programme Code")
+        assert data[2] == "Programme Type: "
+        self.type = data[4]
+        self.code = data[6]
 
-        data = data[39:]
+        data = data[7:]
         self.something = "\n".join(aggregate_until(data, "Faculty: "))
         assert data[0] == "Faculty: "
         self.faculty = data[2]
@@ -68,7 +73,7 @@ class Programme:
         assert data[12] == "Programme Leader: "
         self.programme_leader = data[14]
         assert data[16] == "Mode of Delivery: "
-        assert data[18] == "Normal Duration (including duration for EPA): "
+        assert data[18].startswith("Normal Duration")
         self.duration = data[20]
         self.mode = data[22]
         assert data[24] == "Offered at the following sites:"
@@ -80,8 +85,9 @@ class Programme:
 
         assert data[0] == "Awards Available:\t"
         award_keys = data[1].split('\t')
-        assert data[2] == "(X = Yes)"
-        data = data[3:]
+        data = data[2:]
+        if data[0] == "(X = Yes)":
+            data = data[1:]
         awards = aggregate_until(data, 'Relevant QAA subject benchmarking statement(s):')
         self.awards = [{k: v for k, v in zip(award_keys, a.split('\t'))} for a in awards]
 
@@ -103,18 +109,22 @@ class Programme:
         data = data[12:]
         assert data[0].strip() == 'Module Details (across all module groups):'
         keys = data[1].split('\t')
-        assert data[2].strip() == "(X = Yes)	Must Pass"
-        assert data[3].strip() == "(X = Yes)	Has Pre-req"
-        assert data[4].strip() == "(X = Yes)	Campus"
-        keys.append(["Must Pass", "Has Pre-req", "Campus"])
-        data = data[5:]
+        data = data[2:]
+        if data[0].strip() == "(X = Yes)	Must Pass":
+            assert data[1].strip() == "(X = Yes)	Has Pre-req"
+            assert data[2].strip() == "(X = Yes)	Campus"
+            keys.extend(["Must Pass", "Has Pre-req", "Campus"])
+            data = data[3:]
         values = aggregate_until(data, 'Any programme-specific differences or regulations:')
         self.modules = [{k: v for k, v in zip(keys, v.split('\t'))} for v in values]
         # assert data == ['Any programme-specific differences or regulations:', '', '']
         assert data[0].strip() == 'Any programme-specific differences or regulations:'
-        assert data[3].strip() == "Programme Intake Codes in SAP:"
-        self.intake_codes = data[4].split(';')
-        self.differences = [dif for dif in data[5:] if dif]
+        if len(data) < 4:
+            pass
+        elif data[3].strip() == "Programme Intake Codes in SAP:":
+            self.intake_codes = data[4].split(';')
+            data = data[4:]
+        self.differences = [dif for dif in data[1:] if dif]
 
     def __str__(self):
         return f"Programme({self.code})"
@@ -187,7 +197,7 @@ class Module:
 
         assessment_keys = data[7].split('\t')
         data = data[8:]
-        assert len(assessment_keys) == 7
+        assert len(assessment_keys) in [7, 8]
         assessments = aggregate_until(data, "Anonymous marking exemption codes:")
         self.assessments = [{k: v for k, v in zip(assessment_keys, a.split('\t'))} for a in assessments]
         assert data[0] == "Anonymous marking exemption codes: OPTO1: Individually distinct work; OPTO2: Reflection on development of own work; OPTO3:"

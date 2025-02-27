@@ -13,7 +13,7 @@ include = [
 
 [project]
 name = "curriculum_analysis"
-version = "0.2.10"
+version = "0.2.11"
 authors = [
   { name="Tom Harrison" },
   { name="Graeme Stuart", email="gstuart@dmu.ac.uk" },
